@@ -22,12 +22,18 @@ h2 {
 
 form {
     display: grid;
-    grid-template-columns: 1fr; 
+    grid-template-columns: repeat(1, 2fr); 
     grid-gap: 10px;
     max-width: 600px; 
     margin: 20px auto;
     padding: 20px;
     border-radius: 8px;
+}
+
+.dark input, .dark h2{
+    color: #222;
+    color: #fff;
+    
 }
 
 input, button {
@@ -114,7 +120,7 @@ input, button {
 
 .error-text {
     color: red;
-    font-size: 0.8rem;
+    font-size: 0.4rem;
     margin-top: 4px;
 }
 

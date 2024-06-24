@@ -3,7 +3,7 @@
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box; 
+    box-sizing: border-box;
     font-family: sans-serif;
 }
 
@@ -20,18 +20,25 @@ body {
     padding: 10px;
     transition: 0.5s;
     background-color: #660000;
-    color: #fff; 
+    color: #fff;
 }
 
 ul {
-    list-style: none;
+    list-style: none; /* Removed bullets */
     text-align: center;
     flex-wrap: wrap;
+}
+
+.theme-buttons{
+    list-style: none; /* Removed bullets */
+    text-align: center;
+    
 }
 
 ul li {
     display: inline-block;
     margin: 10px 10px;
+    text-decoration: none;
 }
 
 li a:hover {
@@ -40,16 +47,15 @@ li a:hover {
 
 li a {
     text-decoration: none;
-    font-size: 18px;
+    font-size: 1.5rem; /* Changed from 18px to 1.5rem */
     cursor: pointer;
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    font-size: 1.5rem;
-    margin-left: 20px;
+    margin: 10px 10px;
     color: #fff;
 }
 
-.list-title a {    
-    margin: -10px;
+.list-title a {
+    margin: 0; /* Removed -10px margin */
     padding: 0;
     box-sizing: border-box;
     font-size: 3.5rem;
@@ -62,26 +68,30 @@ li a {
     background: #242424;
     padding: 2px 20px;
     border-radius: 50px;
+    margin-left: auto; /* Move search box to the right */
 }
 
 .search-box input {
     justify-content: center;
-    padding: 5px;
+    margin: 0 10px;
     background: transparent;
     border: 0;
     outline: 0;
     color: #fff;
     font-size: 18px;
     max-width: 200px;
+    text-align: center; /* Center text within input */
 }
 
 .search-box input::placeholder {
     color: #fff;
+    text-align: center; /* Center placeholder text */
 }
 
 .search-box img {
     width: 20px;
     cursor: pointer;
+    margin-left: 10px; /* Add margin between input and icon */
 }
 
 .theme-buttons {
@@ -97,34 +107,36 @@ li a {
 
 @media (max-width: 768px) {
     .navbar {
-        height: auto; 
+        height: auto;
         flex-direction: column;
         justify-content: center;
         align-items: center;
     }
 
     .logo {
-        width: 120px; 
+        width: 120px;
     }
 
     .search-box {
         position: static;
-        margin-top: 20px; 
+        margin-top: 20px;
+        margin-left: 0; /* Reset margin-left for smaller screens */
+        width: 100%; /* Full width for smaller screens */
     }
 
     .search-box input {
-        max-width: 100%; 
+        max-width: 100%;
     }
 }
 
 @media (max-width: 900px) {
     .list-title a {
-        font-size: 2.5rem; 
+        font-size: 2.5rem;
     }
 
     li a {
-        font-size: 1.2rem; 
-        margin-left: 10px; 
+        font-size: 1.2rem;
+        margin-left: 10px;
     }
 }
 

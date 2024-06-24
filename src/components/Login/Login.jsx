@@ -1,55 +1,45 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import useAPI, { METHOD } from '../../hook/useAPI';
+import useAPI, { METHOD } from '../../hook/useAPI'; // Adjust path as necessary
 import './Login.css';
 
-const LoginForm = () => {
+const Login = ({ handleLogin }) => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [data, apiError, apiIsLoading, apiCall] = useAPI(); // Destructure values from useAPI
+  const [data, error, isLoading, apiCall] = useAPI();
 
-  // Function to handle login
-  const handleLogin = async (formData) => {
-    setIsLoading(true); // Start loading state
+  const handleLoginSubmit = async (formData) => {
     try {
-      const response = await apiCall(METHOD.USER_LOGIN, formData); // Call the user login API
-      localStorage.setItem('token', response.token); // Store the token in localStorage
-      setError(null); // Clear any previous error
-      setIsLoading(false); // Stop loading state
-      navigate('/dashboard'); // Redirect to dashboard after successful login
+      await apiCall(METHOD.AUTH_LOGIN, formData);
+      console.log('Login successful!', data);a
+      reset();
+      handleLogin(data.token); // Assuming token is returned in responseData
+      navigate('/');
     } catch (error) {
-      setError(error.message || 'Login failed'); // Set error state with error message
-      setIsLoading(false); // Stop loading state
+      console.error('Login failed:', error.message);
     }
   };
-
-  // Function to handle form submission
-  const onSubmit = (formData) => {
-    handleLogin(formData); // Call handleLogin function with form data
-  };
-
+  
   return (
     <div className="login-container">
       <h2>Login</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(handleLoginSubmit)}>
         <input
           type="email"
           placeholder="Enter email"
-          {...register('email', { required: 'Email is required' })}
+          {...register('email', { required: true })}
           className="login-input"
         />
-        {errors.email && <p className="error-message">{errors.email.message}</p>}
+        {errors.email?.type === 'required' && <p className="error-message">Email is required</p>}
 
         <input
           type="password"
           placeholder="Enter password"
-          {...register('password', { required: 'Password is required' })}
+          {...register('password', { required: true })}
           className="login-input"
         />
-        {errors.password && <p className="error-message">{errors.password.message}</p>}
+        {errors.password?.type === 'required' && <p className="error-message">Password is required</p>}
 
         <button type="submit" disabled={isLoading} className="login-button">
           {isLoading ? 'Logging in...' : 'Login'}
@@ -57,9 +47,8 @@ const LoginForm = () => {
         <button className="cancelBtn" type="button" onClick={() => navigate('/')}>CANCEL</button>
       </form>
       {error && <p className="error-message">{error}</p>}
-      {apiError && <p className="error-message">{apiError}</p>}
     </div>
   );
 };
 
-export default LoginForm;
+export default Login;

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 const baseCardsURL = "https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards";
 const baseUsersURL = "https://monkfish-app-z9uza.ondigitalocean.app/bcard2/users";
@@ -8,200 +8,133 @@ export const METHOD = {
   CARDS_GET_ONE: 'CARDS_GET_ONE',
   CARDS_CREATE: 'CARDS_CREATE',
   CARDS_UPDATE: 'CARDS_UPDATE',
-  CARDS_GET_MY_CARDS: 'CARDS_GET_MY_CARDS',
   CARDS_DELETE: 'CARDS_DELETE',
-  CARDS_LIKE_UNLIKE: 'CARDS_LIKE_UNLIKE',
-
   USERS_GET_ALL: 'USERS_GET_ALL',
   USERS_GET_ONE: 'USERS_GET_ONE',
   USERS_UPDATE: 'USERS_UPDATE',
-  USER_REGISTER: 'USER_REGISTER',
-  USER_LOGIN: 'USER_LOGIN',
-  USER_UPDATE_STATUS: 'USER_UPDATE_STATUS',
-  USER_DELETE: 'USER_DELETE'
+  AUTH_REGISTER: 'AUTH_REGISTER',
+  AUTH_LOGIN: 'AUTH_LOGIN',
 };
 
 const useAPI = () => {
-  const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState(null);
+  const [payload, setPayload] = useState(null);
+  const [isCallAPI, setIsCallAPI] = useState(false);
 
-  const apiCall = useCallback(async (method, payload = {}, retries = 3) => {
-    setIsLoading(true);
+  const schemaTable = {
+    [METHOD.AUTH_REGISTER]: {
+      url: `${baseUsersURL}`,
+      requestSchema: {
+        type: 'object',
+        properties: {
+          name: {
+            type: 'object',
+            properties: {
+              first: { type: 'string', minLength: 2, maxLength: 256 },
+              middle: { type: 'string', minLength: 2, maxLength: 256 },
+              last: { type: 'string', minLength: 2, maxLength: 256 },
+            },
+            required: ['first', 'last']
+          },
+          phone: { type: 'string', minLength: 10, maxLength: 10 },
+          email: { type: 'string', pattern: '^[^\\s@]+@[^\s@]+\\.[^\s@]+$' },
+          password: { type: 'string', minLength: 8 },
+          image: {
+            type: 'object',
+            properties: {
+              url: { type: 'string', minLength: 14 },
+              alt: { type: 'string', minLength: 2, maxLength: 256 }
+            }
+          },
+          address: {
+            type: 'object',
+            properties: {
+              state: { type: 'string', minLength: 2, maxLength: 256 },
+              country: { type: 'string', minLength: 2, maxLength: 256 },
+              city: { type: 'string', minLength: 2, maxLength: 256 },
+              street: { type: 'string', minLength: 2, maxLength: 256 },
+              houseNumber: { type: 'string', minLength: 2, maxLength: 256 },
+              zip: { type: 'string', minLength: 2, maxLength: 256 }
+            },
+            required: ['country', 'city', 'street', 'houseNumber']
+          },
+          isBusiness: { type: 'boolean' }
+        },
+        required: ['name', 'phone', 'email', 'password', 'address']
+      }
+    },
+    [METHOD.AUTH_LOGIN]: {
+      url: `${baseUsersURL}/login`,
+      requestSchema: {
+        type: 'object',
+        properties: {
+          email: { type: 'string', minLength: 5 },
+          password: { type: 'string', minLength: 7, maxLength: 20 }
+        },
+        required: ['email', 'password']
+      }
+    },
+    // Add other methods as needed
+  };
+
+  const apiCall = useCallback(async (method, payload = null) => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('Token not found in localStorage');
+      setIsLoading(true);
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+
+      const { url, requestSchema } = schemaTable[method];
+
+      if (!url) {
+        throw new Error(`URL not specified for method: ${method}`);
       }
 
-      let url, options;
-
-      switch (method) {
-        case METHOD.USER_LOGIN:
-          url = `${baseUsersURL}/login`;
-          options = {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(payload)
-          };
-          break;
-        case METHOD.USER_REGISTER:
-          url = `${baseUsersURL}/register`;
-          options = {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(payload)
-          };
-          break;
-        case METHOD.USERS_GET_ONE:
-          url = `${baseUsersURL}/${payload.id}`;
-          options = {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          };
-          break;
-        case METHOD.USERS_GET_ALL:
-          url = `${baseUsersURL}`;
-          options = {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          };
-          break;
-        case METHOD.USERS_UPDATE:
-          url = `${baseUsersURL}/${payload.id}`;
-          options = {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(payload.data)
-          };
-          break;
-        case METHOD.USER_DELETE:
-          url = `${baseUsersURL}/${payload.id}`;
-          options = {
-            method: 'DELETE',
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          };
-          break;
-        case METHOD.USER_UPDATE_STATUS:
-          url = `${baseUsersURL}/${payload.id}/status`;
-          options = {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ status: payload.status })
-          };
-          break;
-        case METHOD.CARDS_GET_ALL:
-          url = `${baseCardsURL}`;
-          options = {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          };
-          break;
-        case METHOD.CARDS_GET_ONE:
-          url = `${baseCardsURL}/${payload.id}`;
-          options = {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          };
-          break;
-        case METHOD.CARDS_GET_MY_CARDS:
-          url = `${baseCardsURL}/mycards`;
-          options = {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          };
-          break;
-        case METHOD.CARDS_CREATE:
-          url = `${baseCardsURL}`;
-          options = {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(payload)
-          };
-          break;
-        case METHOD.CARDS_UPDATE:
-          url = `${baseCardsURL}/${payload.id}`;
-          options = {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(payload.data)
-          };
-          break;
-        case METHOD.CARDS_DELETE:
-          url = `${baseCardsURL}/${payload.id}`;
-          options = {
-            method: 'DELETE',
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          };
-          break;
-        case METHOD.CARDS_LIKE_UNLIKE:
-          url = `${baseCardsURL}/${payload.id}/like`;
-          options = {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ like: payload.like })
-          };
-          break;
-        default: 
-          throw new Error(`Unsupported API method: ${method}`);
+      if (requestSchema) {
+        // Validate request payload against schema
+        validateRequestSchema(requestSchema, payload);
       }
 
-      const response = await fetch(url, options);
-      if (!response.ok) {
-        throw new Error(`API error: ${response.status} - ${response.statusText}`);
-      }
+      const response = await fetch(url, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload)
+      });
 
       const responseData = await response.json();
-      setData(responseData);
-      setError(null);
-      setIsLoading(false);
-      return responseData;
-    } catch (error) {
-      setError(error.message || 'API call failed');
-      setIsLoading(false);
-      if (retries > 0) {
-        return apiCall(method, payload, retries - 1); // Retry mechanism
+
+      if (!response.ok) {
+        throw new Error(responseData.message || 'Request failed');
       }
-      throw error;
+
+      setData(responseData);
+    } catch (err) {
+      setError(err.message || 'Unknown error occurred');
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
-  return [apiCall, data, error, isLoading];
+  const validateRequestSchema = (schema, data) => {
+    // Implement request schema validation if needed
+    // You can use libraries like ajv for JSON schema validation
+  };
+
+  useEffect(() => {
+    if (isCallAPI && payload) {
+      apiCall(payload.method, payload.data);
+      setIsCallAPI(false);
+    }
+  }, [apiCall, isCallAPI, payload]);
+
+  const callAPI = useCallback((method, data = null) => {
+    setPayload({ method, data });
+    setIsCallAPI(true);
+  }, []);
+
+  return [data, error, isLoading, callAPI];
 };
 
 export default useAPI;

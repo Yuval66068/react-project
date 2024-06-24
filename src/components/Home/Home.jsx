@@ -1,49 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux'; // Import Redux's useSelector
-import useAPI, { METHOD } from '../../hook/useAPI'; // Import your custom API hook
-
-const API_CASES = {
-  BASE_STATE: 'BASE_STATE',
-  CARDS_GET_ALL: 'CARDS_GET_ALL',
-  CARDS_LIKE_UNLIKE: 'CARDS_LIKE_UNLIKE'
-};
+import React, { useEffect, useState } from "react";
+import { useSelector } from 'react-redux'; // Assuming you're using Redux for state management
+import { Grid, Card, CardActionArea, CardMedia, CardContent, Typography, Button } from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import useAPI, { METHOD } from '../../hook/useAPI'; // Adjust import path as needed
+import './Home.css';
 
 const Home = ({ searchText }) => {
   const [listOfCards, setListOfCards] = useState([]);
   const [filteredCards, setFilteredCards] = useState([]);
-  const [data, error, isLoading, apiCall] = useAPI(); // Destructure the API hook
-
-  const userState = useSelector(state => state.user); // Example of using Redux's useSelector
-
-  const [apiCase, setApiCase] = useState(API_CASES.BASE_STATE);
+  const [data, error, isLoading, apiCall] = useAPI();
+  const [showPhone, setShowPhone] = useState({ visible: false, phone: '' });
+  const userState = useSelector(store => store.user);
 
   useEffect(() => {
-    // Fetch initial data when component mounts
-    apiCall(METHOD.CARDS_GET_ALL);
+    apiCall(METHOD.CARDS_GET_ALL); // Use correct method for fetching all cards
   }, [apiCall]);
 
   useEffect(() => {
-    // Handle data updates when data or apiCase changes
-    switch (apiCase) {
-      case API_CASES.CARDS_GET_ALL:
-        if (data) {
-          // Assuming data is an array of cards, update state accordingly
-          const updatedCards = data.map(card => ({
-            ...card,
-            liked: userState && card.likes.includes(userState._id) // Assuming userState._id exists
-          }));
-          setListOfCards(updatedCards);
-          setFilteredCards(updatedCards); // Initialize filteredCards with all cards
-        }
-        break;
-      // Additional cases for other API interactions can be added here
-      default:
-        break;
+    if (data) {
+      const updatedCards = data.map(card => ({
+        ...card,
+        liked: userState && card.likes.includes(userState._id)
+      }));
+      setListOfCards(updatedCards);
     }
-  }, [apiCase, data, userState]);
+  }, [data, userState]);
 
   useEffect(() => {
-    // Filter cards based on searchText
     if (searchText) {
       const filtered = listOfCards.filter(card =>
         card.title.toLowerCase().includes(searchText.toLowerCase())
@@ -55,29 +38,57 @@ const Home = ({ searchText }) => {
   }, [searchText, listOfCards]);
 
   const handleLike = (cardId) => {
-    // Handle liking/unliking a card
-    const payload = { id: cardId };
-    setApiCase(API_CASES.CARDS_LIKE_UNLIKE); // Trigger a re-fetch after liking/unliking
-    apiCall(METHOD.CARDS_LIKE_UNLIKE, payload);
+    const payload = {
+      id: cardId
+    }
+    apiCall(METHOD.CARDS_UPDATE, payload); // Correct method for updating card likes
   };
 
-  if (isLoading) return <div>Loading...</div>; // Render loading state
-  if (error) return <div>Error: {error}</div>; // Render error state
-  if (filteredCards.length === 0) return <div>No results found</div>; // Render no results found
+  const handleShowPhone = (phone) => {
+    setShowPhone({ visible: true, phone });
+  };
 
-  // Render the list of cards
+  const handleClosePhone = () => {
+    setShowPhone({ visible: false, phone: '' });
+  };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   return (
     <div>
-      <h2>List of Cards</h2>
-      {filteredCards.map(card => (
-        <div key={card.id}>
-          <h3>{card.title}</h3>
-          <p>{card.description}</p>
-          <button onClick={() => handleLike(card.id)}>
-            {card.liked ? 'Unlike' : 'Like'}
-          </button>
-        </div>
-      ))}
+      <h1>Home Page</h1>
+      <Grid container spacing={3}>
+        {filteredCards.map((card) => (
+          <Grid item xs={12} sm={6} md={4} key={card._id}>
+            <Card>
+              <CardActionArea>
+                <CardMedia
+                  component="img"
+                  alt={card.title}
+                  height="140"
+                  image={card.image.url}
+                  title={card.title}
+                />
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="h2">
+                    {card.title}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary" component="p">
+                    {card.description}
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+              <Button onClick={() => handleLike(card._id)}>
+                {card.liked ? 'Unlike' : 'Like'}
+              </Button>
+              <Button onClick={() => handleShowPhone(card.phone)}>
+                Show Phone
+              </Button>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
     </div>
   );
 };

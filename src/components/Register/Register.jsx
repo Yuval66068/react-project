@@ -1,222 +1,161 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import useAPI, { METHOD } from '../../hook/useAPI';
 import './Register.css';
+import useAPI, { METHOD } from '../../hook/useAPI';
 
-const RegisterForm = () => {
+const RegisterForm = ({ handleLogin }) => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
   const navigate = useNavigate();
   const [data, error, isLoading, apiCall] = useAPI();
 
   const onSubmit = async (formData) => {
+    console.log(formData)
     try {
-      await apiCall(METHOD.USER_REGISTER, formData);
-      reset(); // Reset the form after successful submission
-      navigate('/'); // Redirect to home page after registration
+      await apiCall(METHOD.AUTH_REGISTER, formData); // Use useAPI hook to make API call
+      reset(); // Reset form after successful registration
+      navigate('/'); // Navigate to home page after successful registration
     } catch (error) {
-      console.error('Registration failed:', error);
+      console.error('Registration failed:', error.message);
     }
   };
 
   return (
-    <div className="register-form">
-      <h2 className="dark">REGISTER</h2>
+    <div>
+      <h2>REGISTER</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
-
-        {/* Name Section */}
+        {/* First Name */}
         <div>
-          <label>First Name*</label>
-          <input
-            {...register('name.first', {
-              required: 'First Name is required',
-              minLength: { value: 2, message: 'First Name must be at least 2 characters' },
-              maxLength: { value: 256, message: 'First Name cannot exceed 256 characters' }
-            })}
-          />
-          {errors.name?.first && <span className="error-text">{errors.name.first.message}</span>}
+          <label></label>
+          <input placeholder='First Name*' {...register('name.first', { required: true, minLength: 2, maxLength: 256 })} />
+          {errors.name?.first?.type === 'required' && <span style={{ color: 'red', fontSize: '0.8rem' }}>First Name is required</span>}
+          {errors.name?.first?.type === 'minLength' && <span style={{ color: 'red' }}>First Name must be at least 2 characters</span>}
+          {errors.name?.first?.type === 'maxLength' && <span style={{ color: 'red' }}>First Name cannot exceed 256 characters</span>}
+        </div>
+
+        {/* Middle Name */}
+        <div>
+          <label></label>
+          <input placeholder='Middle Name' {...register('name.middle', { minLength: 2, maxLength: 256 })} />
+          {errors.name?.middle?.type === 'minLength' && <span style={{ color: 'red' }}>Middle Name must be at least 2 characters</span>}
+          {errors.name?.middle?.type === 'maxLength' && <span style={{ color: 'red' }}>Middle Name cannot exceed 256 characters</span>}
+        </div>
+
+        {/* Last Name */}
+        <div>
+          <label></label>
+          <input placeholder='Last Name*' {...register('name.last', { required: true, minLength: 2, maxLength: 256 })} />
+          {errors.name?.last?.type === 'required' && <span style={{ color: 'red', fontSize: '0.8rem' }}>Last Name is required</span>}
+          {errors.name?.last?.type === 'minLength' && <span style={{ color: 'red' }}>Last Name must be at least 2 characters</span>}
+          {errors.name?.last?.type === 'maxLength' && <span style={{ color: 'red' }}>Last Name cannot exceed 256 characters</span>}
+        </div>
+
+        {/* Phone */}
+        <div>
+          <label></label>
+          <input placeholder='Phone*' {...register('phone', { required: true, minLength: 10, maxLength: 10 })} />
+          {errors.phone?.type === 'required' && <span style={{ color: 'red', fontSize: '0.8rem' }}>Phone number is required</span>}
+          {errors.phone?.type === 'minLength' && <span style={{ color: 'red', fontSize: '0.8rem' }}>Phone number must be exactly 10 digits</span>}
+          {errors.phone?.type === 'maxLength' && <span style={{ color: 'red', fontSize: '0.8rem' }}>Phone number must be exactly 10 digits</span>}
+        </div>
+
+        {/* Email */}
+        <div>
+          <label></label>
+          <input placeholder='Email*' type="email" {...register('email', { required: true, pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ })} />
+          {errors.email?.type === 'required' && <span style={{ color: 'red', fontSize: '0.8rem' }}>Email is required</span>}
+          {errors.email?.type === 'pattern' && <span style={{ color: 'red' }}>Please enter a valid email address</span>}
+        </div>
+
+        {/* Password */}
+        <div>
+          <label></label>
+          <input placeholder='Password*' type="password" {...register('password', { required: true, minLength: 8 })} />
+          {errors.password?.type === 'required' && <span style={{ color: 'red', fontSize: '0.8rem' }}>Password is required</span>}
+          {errors.password?.type === 'minLength' && <span style={{ color: 'red', fontSize: '0.8rem' }}>Password must be at least 8 characters</span>}
+        </div>
+
+        {/* Image URL */}
+        <div>
+          <label></label>
+          <input placeholder='Image URL' {...register('image.url', { minLength: 14 })} />
+          {errors.image?.url?.type === 'minLength' && <span style={{ color: 'red' }}>Image URL must be at least 14 characters</span>}
+        </div>
+
+        {/* Image Alt */}
+        <div>
+          <label></label>
+          <input placeholder='Image Alt' {...register('image.alt', { minLength: 2, maxLength: 256 })} />
+          {errors.image?.alt?.type === 'minLength' && <span style={{ color: 'red' }}>Image Alt must be at least 2 characters</span>}
+          {errors.image?.alt?.type === 'maxLength' && <span style={{ color: 'red' }}>Image Alt cannot exceed 256 characters</span>}
+        </div>
+
+        {/* Address */}
+        <div>
+          <label></label>
+          <input placeholder='State' {...register('address.state', { minLength: 2, maxLength: 256 })} />
+          {errors.address?.state?.type === 'minLength' && <span style={{ color: 'red' }}>State must be at least 2 characters</span>}
+          {errors.address?.state?.type === 'maxLength' && <span style={{ color: 'red' }}>State cannot exceed 256 characters</span>}
         </div>
 
         <div>
-          <label>Middle Name</label>
-          <input
-            {...register('name.middle', {
-              minLength: { value: 2, message: 'Middle Name must be at least 2 characters' },
-              maxLength: { value: 256, message: 'Middle Name cannot exceed 256 characters' }
-            })}
-          />
-          {errors.name?.middle && <span className="error-text">{errors.name.middle.message}</span>}
+          <label></label>
+          <input placeholder='Country*' {...register('address.country', { required: true, minLength: 2, maxLength: 256 })} />
+          {errors.address?.country?.type === 'required' && <span style={{ color: 'red', fontSize: '0.8rem' }}>Country is required</span>}
+          {errors.address?.country?.type === 'minLength' && <span style={{ color: 'red' }}>Country must be at least 2 characters</span>}
+          {errors.address?.country?.type === 'maxLength' && <span style={{ color: 'red' }}>Country cannot exceed 256 characters</span>}
         </div>
 
         <div>
-          <label>Last Name*</label>
-          <input
-            {...register('name.last', {
-              required: 'Last Name is required',
-              minLength: { value: 2, message: 'Last Name must be at least 2 characters' },
-              maxLength: { value: 256, message: 'Last Name cannot exceed 256 characters' }
-            })}
-          />
-          {errors.name?.last && <span className="error-text">{errors.name.last.message}</span>}
-        </div>
-
-        {/* Contact Information */}
-        <div>
-          <label>Phone*</label>
-          <input
-            type="text"
-            {...register('phone', {
-              required: 'Phone number is required',
-              pattern: { value: /^\d+$/, message: 'Phone number must contain only digits' },
-              minLength: { value: 9, message: 'Phone number must be at least 9 digits' },
-              maxLength: { value: 11, message: 'Phone number must not exceed 11 digits' }
-            })}
-          />
-          {errors.phone && <span className="error-text">{errors.phone.message}</span>}
+          <label></label>
+          <input placeholder='City*' {...register('address.city', { required: true, minLength: 2, maxLength: 256 })} />
+          {errors.address?.city?.type === 'required' && <span style={{ color: 'red', fontSize: '0.8rem' }}>City is required</span>}
+          {errors.address?.city?.type === 'minLength' && <span style={{ color: 'red' }}>City must be at least 2 characters</span>}
+          {errors.address?.city?.type === 'maxLength' && <span style={{ color: 'red' }}>City cannot exceed 256 characters</span>}
         </div>
 
         <div>
-          <label>Email*</label>
-          <input
-            type="email"
-            {...register('email', {
-              required: 'Email is required',
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: 'Please enter a valid email address'
-              }
-            })}
-          />
-          {errors.email && <span className="error-text">{errors.email.message}</span>}
+          <label></label>
+          <input placeholder='Street*' {...register('address.street', { required: true, minLength: 2, maxLength: 256 })} />
+          {errors.address?.street?.type === 'required' && <span style={{ color: 'red', fontSize: '0.8rem' }}>Street is required</span>}
+          {errors.address?.street?.type === 'minLength' && <span style={{ color: 'red' }}>Street must be at least 2 characters</span>}
+          {errors.address?.street?.type === 'maxLength' && <span style={{ color: 'red' }}>Street cannot exceed 256 characters</span>}
         </div>
 
         <div>
-          <label>Password*</label>
-          <input
-            type="password"
-            {...register('password', {
-              required: 'Password is required',
-              minLength: { value: 7, message: 'Password must be at least 7 characters' }
-            })}
-          />
-          {errors.password && <span className="error-text">{errors.password.message}</span>}
-        </div>
-
-        {/* Image Section */}
-        <div>
-          <label>Image URL</label>
-          <input
-            {...register('image.url', {
-              minLength: { value: 14, message: 'Image URL must be at least 14 characters' }
-            })}
-          />
-          {errors.image?.url && <span className="error-text">{errors.image.url.message}</span>}
+          <label></label>
+          <input placeholder='House Number*' {...register('address.houseNumber', { required: true, minLength: 2, maxLength: 256 })} />
+          {errors.address?.houseNumber?.type === 'required' && <span style={{ color: 'red', fontSize: '0.8rem' }}>House Number is required</span>}
+          {errors.address?.houseNumber?.type === 'minLength' && <span style={{ color: 'red' }}>House Number must be at least 2 characters</span>}
+          {errors.address?.houseNumber?.type === 'maxLength' && <span style={{ color: 'red' }}>House Number cannot exceed 256 characters</span>}
         </div>
 
         <div>
-          <label>Image Alt</label>
-          <input
-            {...register('image.alt', {
-              minLength: { value: 2, message: 'Image Alt must be at least 2 characters' },
-              maxLength: { value: 256, message: 'Image Alt cannot exceed 256 characters' }
-            })}
-          />
-          {errors.image?.alt && <span className="error-text">{errors.image.alt.message}</span>}
-        </div>
-
-        {/* Address Section */}
-        <div>
-          <label>State</label>
-          <input
-            {...register('address.state', {
-              minLength: { value: 2, message: 'State must be at least 2 characters' },
-              maxLength: { value: 256, message: 'State cannot exceed 256 characters' }
-            })}
-          />
-          {errors.address?.state && <span className="error-text">{errors.address.state.message}</span>}
-        </div>
-
-        <div>
-          <label>Country*</label>
-          <input
-            {...register('address.country', {
-              required: 'Country is required',
-              minLength: { value: 2, message: 'Country must be at least 2 characters' },
-              maxLength: { value: 256, message: 'Country cannot exceed 256 characters' }
-            })}
-          />
-          {errors.address?.country && <span className="error-text">{errors.address.country.message}</span>}
-        </div>
-
-        <div>
-          <label>City*</label>
-          <input
-            {...register('address.city', {
-              required: 'City is required',
-              minLength: { value: 2, message: 'City must be at least 2 characters' },
-              maxLength: { value: 256, message: 'City cannot exceed 256 characters' }
-            })}
-          />
-          {errors.address?.city && <span className="error-text">{errors.address.city.message}</span>}
-        </div>
-
-        <div>
-          <label>Street*</label>
-          <input
-            {...register('address.street', {
-              required: 'Street is required',
-              minLength: { value: 2, message: 'Street must be at least 2 characters' },
-              maxLength: { value: 256, message: 'Street cannot exceed 256 characters' }
-            })}
-          />
-          {errors.address?.street && <span className="error-text">{errors.address.street.message}</span>}
-        </div>
-
-        <div>
-          <label>House Number*</label>
-          <input
-            type="number"
-            {...register('address.houseNumber', {
-              required: 'House Number is required',
-              minLength: { value: 2, message: 'House Number must be at least 2 characters' },
-              maxLength: { value: 256, message: 'House Number cannot exceed 256 characters' }
-            })}
-          />
-          {errors.address?.houseNumber && <span className="error-text">{errors.address.houseNumber.message}</span>}
-        </div>
-
-        <div>
-          <label>ZIP</label>
-          <input
-            type="number"
-            {...register('address.zip', {
-              minLength: { value: 2, message: 'ZIP must be at least 2 characters' },
-              maxLength: { value: 256, message: 'ZIP cannot exceed 256 characters' }
-            })}
-          />
-          {errors.address?.zip && <span className="error-text">{errors.address.zip.message}</span>}
+          <label></label>
+          <input placeholder='ZIP' {...register('address.zip', { minLength: 2, maxLength: 256 })} />
+          {errors.address?.zip?.type === 'minLength' && <span style={{ color: 'red' }}>ZIP must be at least 2 characters</span>}
+          {errors.address?.zip?.type === 'maxLength' && <span style={{ color: 'red' }}>ZIP cannot exceed 256 characters</span>}
         </div>
 
         {/* Checkbox */}
-        <div className="checkboxContainer">
-          <input
-            type="checkbox"
-            {...register('isBusiness', { required: 'Please accept the terms and conditions' })}
-          />
-          <span className="checkboxText">Signup as a business</span>
-          {errors.isBusiness && <span className="error-text">{errors.isBusiness.message}</span>}
+        <div>
+          <label>
+            <input type="checkbox" {...register('isBusiness', { required: true })} />
+            Signup as a business
+          </label>
+          <br />
+          {errors.terms?.type === 'required' && <span style={{ color: 'red', fontSize: '0.8rem' }}>Please accept the terms and conditions</span>}
         </div>
 
         {/* Submit and other buttons */}
-        <div className="form-actions">
+        <div>
           <button className="submitBtn" type="submit">SUBMIT</button>
           <button className="cancelBtn" type="button" onClick={() => navigate('/')}>CANCEL</button>
           <button className="resetBtn" type="reset" onClick={() => reset()}>RESET</button>
         </div>
       </form>
-
       {isLoading && <p>Loading...</p>}
-      {error && <p className="error">{error}</p>}
+      {error && <p style={{ color: 'red' }}>{error.message}</p>} {/* Display error message */}
     </div>
   );
 };

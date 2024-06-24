@@ -1,6 +1,6 @@
 // Navbar.js
 import React from 'react';
-import '../components/Navbar.css';
+import '../components/Navbar.css'
 import logo_light from '../images/night.png';
 import logo_dark from '../images/day.png';
 import search_icon_light from '../images/search-w.png';
@@ -21,9 +21,8 @@ const Navbar = ({ theme, setTheme, token, onLogout }) => {
   return (
     <div className={`navbar ${theme === 'dark' ? 'dark' : ''}`}>
       <ul>
-        <li className='list-title'><Link to='/'>BCARD</Link></li>
+        <li className='list-title'><Link to='/Home'>BCARD</Link></li>
         <li><Link to='/about'>ABOUT</Link></li>
-       
       </ul>
 
       <div className='search-box'>
@@ -33,14 +32,13 @@ const Navbar = ({ theme, setTheme, token, onLogout }) => {
 
       <div className='theme-buttons'>
         <button className='login-btn' onClick={toggleMode}>
-          <img src={theme === 'light' ? logo_light : logo_dark} alt="night" />
+          <img src={theme === 'light' ? logo_light : logo_dark} alt="night" style={{ width: '30px' }} />
         </button>
         {!token ? (
           <>
-              <li><Link to='/RegisterForm'>SIGNUP</Link></li> 
-              <li><Link to='/LoginForm'>LOGIN</Link></li>
+            <li><Link to='/RegisterForm'>SIGNUP</Link></li>
+            <li><Link to='/LoginForm'>LOGIN</Link></li>
           </>
-          
         ) : (
           <button className='login-btn' onClick={handleLogoutClick}>Logout</button>
         )}
