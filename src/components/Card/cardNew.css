@@ -1,0 +1,144 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #d1eaf8;
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+.dark h2 {
+    color: #222; 
+}
+
+h2 {
+    margin-top: 20px;
+    color: #333;
+    font-size: 1.8rem;
+}
+
+form {
+    display: grid;
+    grid-template-columns: repeat(1, 2fr); 
+    grid-gap: 10px;
+    max-width: 600px; 
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.dark input, .dark h2{
+    color: #222;
+    color: #fff;
+    
+}
+
+input, button {
+    background-color: transparent;
+    padding: 10px;
+    width: 100%; 
+    max-width: 100%;
+    height: 40px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    box-shadow: none; 
+    outline: none; 
+}
+
+.dark button {
+    color: #fff;
+}
+
+.checkboxContainer {
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    margin-bottom: 10px; /* Adjusted margin for better alignment */
+    justify-content: flex-start; /* Aligns checkbox to the left */
+}
+
+.checkboxContainer input[type="checkbox"] {
+    width: 20px; 
+}
+
+.checkboxContainer .checkboxText {
+    white-space: nowrap;
+    margin-left: 5px; /* Adds spacing between checkbox and text */
+}
+
+.submitBtn, .cancelBtn, .resetBtn {
+    padding: 12px 20px;
+    font-size: 1.2rem;
+    border-radius: 4px;
+    width: 100%; 
+}
+
+.submitBtn {
+    background-color: #8e98a3;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.8s ease;
+}
+
+.submitBtn:hover {
+    background-color: #0056b3;
+}
+
+.cancelBtn {
+    background-color: transparent;
+    border: 1px solid red;
+    color: red;
+    transition: background-color 0.8s ease;
+}
+
+.cancelBtn:hover {
+    background-color: red;
+    color: #fff; /* Adjusts text color on hover */
+}
+
+.resetBtn {
+    background-color: transparent;
+    border: 1px solid blue;
+    color: blue;
+    transition: background-color 0.8s ease;
+}
+
+.resetBtn:hover {
+    background-color: blue;
+    color: #fff; /* Adjusts text color on hover */
+}
+
+.error {
+    border-color: red;
+}
+
+.error-text {
+    color: red;
+    font-size: 0.4rem;
+    margin-top: 4px;
+}
+
+@media (min-width: 768px) {
+    form {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .checkboxContainer {
+        grid-column: span 2; /* Spans across both columns at larger screens */
+        justify-content: flex-start; /* Aligns checkbox to the left */
+        align-items: center; /* Centers vertically */
+    }
+    
+    .form-actions {
+        grid-column: span 2; /* Spans across both columns */
+        display: flex;
+        flex-direction: column; /* Stacks buttons vertically */
+        gap: 10px; /* Adds spacing between buttons */
+    }
+}

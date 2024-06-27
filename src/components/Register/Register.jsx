@@ -2,7 +2,9 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import './Register.css';
-import useAPI, { METHOD } from '../../hook/useAPI';
+import { METHOD } from '../././../models/apiSchemas';
+import useAPI from '../../hook/useAPI';
+
 
 const RegisterForm = ({ handleLogin }) => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
@@ -10,11 +12,10 @@ const RegisterForm = ({ handleLogin }) => {
   const [data, error, isLoading, apiCall] = useAPI();
 
   const onSubmit = async (formData) => {
-    console.log(formData)
     try {
       await apiCall(METHOD.AUTH_REGISTER, formData); // Use useAPI hook to make API call
-      reset(); // Reset form after successful registration
-      navigate('/'); // Navigate to home page after successful registration
+      // reset(); 
+      // navigate('/LoginForm');
     } catch (error) {
       console.error('Registration failed:', error.message);
     }

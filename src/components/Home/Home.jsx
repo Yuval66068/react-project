@@ -1,41 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from 'react-redux'; // Assuming you're using Redux for state management
-import { Grid, Card, CardActionArea, CardMedia, CardContent, Typography, Button } from '@material-ui/core';
-import { Link } from 'react-router-dom';
-import useAPI, { METHOD } from '../../hook/useAPI'; // Adjust import path as needed
+import { Grid, Card, CardActionArea, CardMedia, CardContent, Typography, Button } from '@mui/material';
+import { METHOD } from '../../models/apiSchemas';
+import useAPI from '../../hook/useAPI';
 import './Home.css';
 
-const Home = ({ searchText }) => {
-  const [listOfCards, setListOfCards] = useState([]);
-  const [filteredCards, setFilteredCards] = useState([]);
+const Home = ({ searchInput }) => {
   const [data, error, isLoading, apiCall] = useAPI();
   const [showPhone, setShowPhone] = useState({ visible: false, phone: '' });
-  const userState = useSelector(store => store.user);
-
+  const filteredList = data && data.filter((card) => card.title.includes(searchInput));
   useEffect(() => {
     apiCall(METHOD.CARDS_GET_ALL); // Use correct method for fetching all cards
   }, [apiCall]);
-
-  useEffect(() => {
-    if (data) {
-      const updatedCards = data.map(card => ({
-        ...card,
-        liked: userState && card.likes.includes(userState._id)
-      }));
-      setListOfCards(updatedCards);
-    }
-  }, [data, userState]);
-
-  useEffect(() => {
-    if (searchText) {
-      const filtered = listOfCards.filter(card =>
-        card.title.toLowerCase().includes(searchText.toLowerCase())
-      );
-      setFilteredCards(filtered);
-    } else {
-      setFilteredCards(listOfCards);
-    }
-  }, [searchText, listOfCards]);
 
   const handleLike = (cardId) => {
     const payload = {
@@ -59,7 +34,7 @@ const Home = ({ searchText }) => {
     <div>
       <h1>Home Page</h1>
       <Grid container spacing={3}>
-        {filteredCards.map((card) => (
+        {filteredList && filteredList.map((card) => (
           <Grid item xs={12} sm={6} md={4} key={card._id}>
             <Card>
               <CardActionArea>

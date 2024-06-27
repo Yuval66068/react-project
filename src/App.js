@@ -6,12 +6,14 @@ import About from './components/pages/About';
 import RegisterForm from './components/Register/Register.jsx'
 import Login from './components/Login/Login.jsx'
 import useAPI, { METHOD } from './hook/useAPI'; // Adjusted import path
-
+import Home from './components/Home/Home';
+import CardNew from './components/Card/cardNew.jsx';
 
 function App() {
   const currentTheme = localStorage.getItem('current_theme');
   const [theme, setTheme] = useState(currentTheme || 'light');
   const [token, setToken] = useState(localStorage.getItem('token') || null);
+  const [searchInput,setSearchInput] = useState("");
 
   const [userData, error, isLoading, fetchUserData] = useAPI();
 
@@ -38,12 +40,14 @@ function App() {
   return (
     <Router>
       <div className={`container ${theme}`}>
-        <Navbar theme={theme} setTheme={setTheme} token={token} onLogout={handleLogout} />
+        <Navbar theme={theme} setTheme={setTheme} token={token} onLogout={handleLogout} setSearchInput={setSearchInput}/>
 
         <Routes>
           <Route path="/RegisterForm" element={<RegisterForm handleLogin={handleLogin} />} />
           <Route path="/LoginForm" element={<Login handleLogin={handleLogin} />} />
           <Route path="/about" element={<About />} />
+          <Route path="/" element={<Home searchInput={searchInput}/>} />
+          <Route path="/cardNew" element={<CardNew token={token}/>} />
         </Routes>
 
         {isLoading && <p>Loading...</p>}
