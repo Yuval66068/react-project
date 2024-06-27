@@ -13,7 +13,7 @@ const CardNew = ({token}) => {
   const handleLoginSubmit = async (formData) => {
     
     try {
-      await apiCall(METHOD.CARDS_CREATE, formData,{"x-auth-token": token});
+      await apiCall(METHOD.CARDS_CREATE, formData,{},{"x-auth-token": token});
       // reset(); 
       // navigate('/LoginForm');
     } catch (error) {

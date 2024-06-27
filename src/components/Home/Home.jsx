@@ -3,11 +3,13 @@ import { Grid, Card, CardActionArea, CardMedia, CardContent, Typography, Button 
 import { METHOD } from '../../models/apiSchemas';
 import useAPI from '../../hook/useAPI';
 import './Home.css';
+import { useNavigate } from "react-router-dom";
 
 const Home = ({ searchInput }) => {
   const [data, error, isLoading, apiCall] = useAPI();
   const [showPhone, setShowPhone] = useState({ visible: false, phone: '' });
   const filteredList = data && data.filter((card) => card.title.includes(searchInput));
+  const navigate = useNavigate();
   useEffect(() => {
     apiCall(METHOD.CARDS_GET_ALL); // Use correct method for fetching all cards
   }, [apiCall]);
@@ -27,6 +29,10 @@ const Home = ({ searchInput }) => {
     setShowPhone({ visible: false, phone: '' });
   };
 
+  const handleSingleCard = (id) => {
+    navigate(`/${id}`)
+  }
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
@@ -35,7 +41,7 @@ const Home = ({ searchInput }) => {
       <h1>Home Page</h1>
       <Grid container spacing={3}>
         {filteredList && filteredList.map((card) => (
-          <Grid item xs={12} sm={6} md={4} key={card._id}>
+          <Grid item xs={12} sm={6} md={4} key={card._id} onClick={() => handleSingleCard(card._id)}>
             <Card>
               <CardActionArea>
                 <CardMedia

@@ -8,6 +8,7 @@ import Login from './components/Login/Login.jsx'
 import useAPI, { METHOD } from './hook/useAPI'; // Adjusted import path
 import Home from './components/Home/Home';
 import CardNew from './components/Card/cardNew.jsx';
+import CardView from './components/Card/cardView.jsx';
 
 function App() {
   const currentTheme = localStorage.getItem('current_theme');
@@ -48,6 +49,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/" element={<Home searchInput={searchInput}/>} />
           <Route path="/cardNew" element={<CardNew token={token}/>} />
+          <Route path="/:cardId" element={<CardView token={token}/>} />
         </Routes>
 
         {isLoading && <p>Loading...</p>}

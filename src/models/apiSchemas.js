@@ -141,4 +141,40 @@ export const schemaTable = {
             required: ['title', 'subtitle', 'description', 'phone', 'email', 'web', 'image', 'address']
         }
     },
+    [METHOD.CARDS_GET_ONE]: {
+        url: (cardId) => `${baseCardsURL}/${cardId}`,
+        httpMethod: 'GET',
+        requestSchema: {
+            type: 'object',
+            properties: {
+                title: { type: 'string', minLength: 1, maxLength: 256 },
+                subtitle: { type: 'string', minLength: 1, maxLength: 256 },
+                description: { type: 'string', minLength: 1, maxLength: 1024 },
+                phone: { type: 'string', minLength: 10, maxLength: 10 },
+                email: { type: 'string', pattern: '^[^\\s@]+@[^\s@]+\\.[^\s@]+$' },
+                web: { type: 'string', pattern: '^(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})([/\\w .-]*)*/?$' },
+                image: {
+                    type: 'object',
+                    properties: {
+                        url: { type: 'string', minLength: 14 },
+                        alt: { type: 'string', minLength: 2, maxLength: 256 }
+                    },
+                    required: ['url', 'alt']
+                },
+                address: {
+                    type: 'object',
+                    properties: {
+                        street: { type: 'string', minLength: 2, maxLength: 256 },
+                        city: { type: 'string', minLength: 2, maxLength: 256 },
+                        state: { type: 'string', minLength: 2, maxLength: 256, optional: true },
+                        zip: { type: 'string', minLength: 2, maxLength: 256, optional: true },
+                        country: { type: 'string', minLength: 2, maxLength: 256 },
+                        houseNumber: { type: 'number', minimum: 1 }
+                    },
+                    required: ['street', 'city', 'country', 'houseNumber']
+                },
+            },
+            required: ['title', 'subtitle', 'description', 'phone', 'email', 'web', 'image', 'address']
+        }
+    },
 };

@@ -9,7 +9,7 @@ const useAPI = () => {
   const [isCallAPI, setIsCallAPI] = useState(false);
   const [customHeaders, setCustomHeaders] = useState({});
 
-  const apiCall = useCallback(async (method, payload = null) => {
+  const apiCall = useCallback(async (method, payload = null, urlParams = {}) => {
     try {
       setIsLoading(true);
       const headers = {
@@ -22,6 +22,9 @@ const useAPI = () => {
       if (!url) {
         throw new Error(`URL not specified for method: ${method}`);
       }
+
+       // Handle URL parameters
+    const finalUrl = typeof url === 'function' ? url(urlParams.id) : url;
   
       const options = {
         method: httpMethod || 'POST', // Use 'POST' as default if not specified
@@ -32,7 +35,7 @@ const useAPI = () => {
         options.body = JSON.stringify(payload);
       }
 
-      const response = await fetch(url, options);
+      const response = await fetch(finalUrl, options);
   
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -58,13 +61,13 @@ const useAPI = () => {
 
   useEffect(() => {
     if (isCallAPI && payload) {
-      apiCall(payload.method, payload.data);
+      apiCall(payload.method, payload.data,payload.urlParams);
       setIsCallAPI(false);
     }
   }, [apiCall, isCallAPI, payload]);
 
-  const callAPI = useCallback((method, data = null, customHeaders = {}) => {
-    setPayload({ method, data });
+  const callAPI = useCallback((method, data = null,urlParams = {}, customHeaders = {}) => {
+    setPayload({ method, data, urlParams });
     setCustomHeaders({
       ...customHeaders, // Merge new customHeaders with existing ones
     });
