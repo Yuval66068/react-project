@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { METHOD } from '../././../models/apiSchemas';
@@ -23,6 +23,20 @@ const Login = ({ handleLogin }) => {
       console.error('Login failed:', error.message);
     }
   };
+
+  useEffect(() => {
+    if (data) {
+      console.log('Login successful!', data);
+      handleLogin(data);
+      // reset();
+      // setTimeout(() => {
+      //   navigate('/');
+      // }, 2000);
+    }
+  }, [data, handleLogin, navigate]);
+
+
+  console.log("data",data)
 
   return (
     <div className="login-container">

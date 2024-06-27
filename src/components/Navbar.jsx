@@ -22,7 +22,7 @@ const Navbar = ({ theme, setTheme, token, onLogout, setSearchInput }) => {
   return (
     <div className={`navbar ${theme === 'dark' ? 'dark' : ''}`}>
       <ul>
-        <li className='list-title'><Link to='/Home'>BCARD</Link></li>
+        <li className='list-title'><Link to='/'>BCARD</Link></li>
         <li><Link to='/about'>ABOUT</Link></li>
         {token && <li><Link to='/cardNew'>New Card</Link></li>}
       </ul>
