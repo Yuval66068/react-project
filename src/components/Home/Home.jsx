@@ -4,6 +4,8 @@ import { METHOD } from '../../models/apiSchemas';
 import useAPI from '../../hook/useAPI';
 import './Home.css';
 import { useNavigate } from "react-router-dom";
+import card from "../pages/CustomCard";
+
 
 const Home = ({ searchInput }) => {
   const [data, error, isLoading, apiCall] = useAPI();
@@ -30,11 +32,11 @@ const Home = ({ searchInput }) => {
   };
 
   const handleSingleCard = (id) => {
-    navigate(`/${id}`)
+    navigate(`/${id}`)  
   }
 
   if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  /* if (error) return <div>Error: {error}</div>; */
 
   return (
     <div>

@@ -13,9 +13,9 @@ const RegisterForm = ({ handleLogin }) => {
 
   const onSubmit = async (formData) => {
     try {
-      await apiCall(METHOD.AUTH_REGISTER, formData); // Use useAPI hook to make API call
-      // reset(); 
-      // navigate('/LoginForm');
+      await apiCall(METHOD.AUTH_REGISTER, formData); 
+      reset(); 
+      navigate('/LoginForm');
     } catch (error) {
       console.error('Registration failed:', error.message);
     }
@@ -141,11 +141,11 @@ const RegisterForm = ({ handleLogin }) => {
         {/* Checkbox */}
         <div>
           <label>
-            <input type="checkbox" {...register('isBusiness', { required: true })} />
+            <input type="checkbox" {...register('isBusiness', { required: false })} />
             Signup as a business
           </label>
           <br />
-          {errors.terms?.type === 'required' && <span style={{ color: 'red', fontSize: '0.8rem' }}>Please accept the terms and conditions</span>}
+          {errors.terms?.type === '!required' && <span style={{ color: 'red', fontSize: '0.8rem' }}>Please accept the terms and conditions</span>}
         </div>
 
         {/* Submit and other buttons */}

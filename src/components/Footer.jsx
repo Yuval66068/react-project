@@ -1,18 +1,22 @@
-// Footer.js
 import React from 'react';
 import './Footer.css';
+import { FaInfoCircle, FaFileContract, FaEnvelope, FaGithub } from 'react-icons/fa';
+import { Home, AccountCircle, Settings } from '@mui/icons-material'; 
+import { Link } from 'react-router-dom';
+import about from '../images/about.png'
 
-const Footer = () => {
-  return (
-    <footer className="footer">
-      <p>&copy; Yuval Tamir</p>
+const Footer = ({ token, isBusinessUser }) => (
+  <footer className="footer">
+    <nav>
       <ul className="footer-links">
-        <li><a href="/about">About</a></li>
-        <li><a href="/terms-of-service">Terms of Service</a></li>
-        <li><a href="/contact-us">Contact Us</a></li>
+        <li> <Link to='/about'>About</Link ></li>
+        {token && <li><Link to='favorites'>Favorites</Link></li>}
+        {isBusinessUser && <li><Link to='/my-cards'>My Cards</Link></li>}
+        {isBusinessUser && <li><Link to='/CardNew'>Create New Card</Link></li>}
+     
       </ul>
-    </footer>
-  );
-};
+    </nav>
+  </footer>
+);
 
 export default Footer;

@@ -14,29 +14,29 @@ const Login = ({ handleLogin }) => {
     try {
       await apiCall(METHOD.AUTH_LOGIN, formData);
       console.log('Login successful!', data);
-      // reset();
+      reset();
       handleLogin(data);
       setTimeout(() => {
         navigate('/');
       }, 2000);
+      
     } catch (error) {
       console.error('Login failed:', error.message);
     }
   };
-
+    console.log("data",data)
   useEffect(() => {
     if (data) {
       console.log('Login successful!', data);
       handleLogin(data);
-      // reset();
-      // setTimeout(() => {
-      //   navigate('/');
-      // }, 2000);
+       reset();
+       setTimeout(() => {
+         navigate('/');
+       }, 2000);
     }
   }, [data, handleLogin, navigate]);
 
 
-  console.log("data",data)
 
   return (
     <div className="login-container">
