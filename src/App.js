@@ -5,12 +5,14 @@ import About from './components/pages/About';
 import RegisterForm from './components/Register/Register';
 import Login from './components/Login/Login';
 import useAPI from './hook/useAPI'; 
-import Home from './components/Home/Home';
+import Home from './components/Home/Home.jsx';
 import CardNew from './components/Card/cardNew';
 import CardView from './components/Card/cardView';
 import CardEdit from './components/Card/cardEdit';
 import Footer from './components/Footer';
 import FavoritesCard from './components/favorites';
+import MyCards from './components/myCard';
+
 
 function App() {
   const currentTheme = localStorage.getItem('current_theme');
@@ -19,7 +21,19 @@ function App() {
   const [searchInput, setSearchInput] = useState("");
 
   const [userData, error, isLoading, callAPI] = useAPI();
-  const [isBusiness, setIsBusiness] = useState(false);
+
+  const [isBusiness, setIsBusiness] = useState(() => {
+    if (token) {
+      try {
+        const parsedToken = JSON.parse(token);
+        return parsedToken.userData?.isBusiness || false;
+      } catch (e) {
+        // If token is not JSON, return false
+        return false;
+      }
+    }
+    return false;
+  });
 
   useEffect(() => {
     localStorage.setItem('current_theme', theme);
@@ -27,7 +41,7 @@ function App() {
 
   useEffect(() => {
     if (token) {
-      callAPI('fetchUserData', null, { id: token }); 
+      callAPI('fetchUserData', null, { id: token });
     }
   }, [token, callAPI]);
 
@@ -36,12 +50,11 @@ function App() {
       setIsBusiness(userData.isBusiness);
     }
   }, [userData]);
-  
 
   const handleLogin = (newToken) => {
     setToken(newToken);
     localStorage.setItem('token', newToken);
-    fetch('/api/isBusiness', {
+    fetch('./models/apiSchemas.js', {
       headers: { Authorization: `Bearer ${newToken}` }
     })
       .then(response => response.json())
@@ -80,6 +93,7 @@ function App() {
           <Route path="/favorites" element={<FavoritesCard token={token} />} />
           <Route path="/cardNew" element={<CardNew isBusinessUser={isBusiness} />} />
           <Route path="/cardEdit" element={<CardEdit isBusinessUser={isBusiness} />} />
+          <Route path="/my-cards" element={<MyCards isBusinessUser={isBusiness} />} />
         </Routes>
         {userData && (
           <div>

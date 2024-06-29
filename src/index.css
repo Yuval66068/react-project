@@ -29,7 +29,13 @@
     color: #fff;
 }
 
-h1{
-  font-size: 4rem;
-  ;
-}
+
+
+.about{
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;  
+  padding: 40px 20px;
+  }
+
+  

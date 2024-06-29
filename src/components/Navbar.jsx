@@ -30,8 +30,8 @@ const Navbar = ({ theme, setTheme, token, isBusinessUser, onLogout, setSearchInp
     <div className={`navbar ${theme === 'dark' ? 'dark' : ''}`}>
       <ul className="nav-links">
         <li className='list-title'><Link to='/'>BCARD</Link></li>
-        <li><Link to='/about'>About</Link></li>
-        {token && <li><Link to='/favorites'>Favorites</Link></li>}
+        <li><Link to='/about'>ABOUT</Link></li>
+        {token &&  <li><Link to='/favorites'>Favorites</Link></li>}
         {isBusinessUser && <li><Link to='/my-cards'>My Cards</Link></li>}
         {isBusinessUser && <li><Link to='/CardNew'>Create New Card</Link></li>}
         {isBusinessUser && <li><Link to='/CardEdit'>Edit Card</Link></li>}

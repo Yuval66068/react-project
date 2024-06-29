@@ -11,7 +11,7 @@ export default function About () {
 
     return (
         <div className="about">
-            <h2>About us</h2>
+            <h2 className="about">About</h2>
             <p>This site allows users to create and manage business cards.</p>
     <p>You can create, edit, delete, and mark cards as favorites.</p>
     <p>Business users have additional privileges to create new cards.</p>

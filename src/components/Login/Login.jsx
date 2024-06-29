@@ -40,7 +40,7 @@ const Login = ({ handleLogin }) => {
 
   return (
     <div className="login-container">
-      <h2>Login</h2>
+      <h2>LOGIN</h2>
       <form onSubmit={handleSubmit(handleLoginSubmit)}>
         <input
           type="email"
