@@ -87,8 +87,8 @@ function App() {
           <Route path="/" element={<Home searchInput={searchInput} isBusiness={isBusiness}/>} />
           <Route path="/favorites" element={<FavoritesCard token={token} />} />
           <Route path="/cardNew" element={<CardNew token={token} />} />
-          <Route path="/cardEdit" element={<CardEdit isBusinessUser={isBusiness} />} />
-          <Route path="/my-cards" element={<MyCards isBusinessUser={isBusiness} />} />
+          <Route path="/cardEdit/:cardId" element={<CardEdit isBusinessUser={isBusiness} />} />
+          <Route path="/my-cards" element={<MyCards isBusinessUser={isBusiness} token={token}/>} />
         </Routes>
         {userData && (
           <div>

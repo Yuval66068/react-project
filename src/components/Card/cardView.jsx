@@ -12,7 +12,7 @@ const CardView = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-      apiCall(METHOD.CARDS_GET_ONE, {}, {id:cardId},{}); 
+      apiCall(METHOD.CARDS_GET_ONE, null, {id:cardId},{}); 
     }, [apiCall]);
 
     console.log(data)
