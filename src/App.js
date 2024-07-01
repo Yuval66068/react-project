@@ -12,6 +12,7 @@ import CardEdit from './components/Card/cardEdit';
 import Footer from './components/Footer';
 import FavoritesCard from './components/favorites';
 import MyCards from './components/myCard';
+import { jwtDecode } from "jwt-decode";
 
 
 function App() {
@@ -19,21 +20,9 @@ function App() {
   const [theme, setTheme] = useState(currentTheme || 'light');
   const [token, setToken] = useState(localStorage.getItem('token') || null);
   const [searchInput, setSearchInput] = useState("");
-
+  const [isBusiness, setIsBusiness] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [userData, error, isLoading, callAPI] = useAPI();
-
-  const [isBusiness, setIsBusiness] = useState(() => {
-    if (token) {
-      try {
-        const parsedToken = JSON.parse(token);
-        return parsedToken.userData?.isBusiness || false;
-      } catch (e) {
-        // If token is not JSON, return false
-        return false;
-      }
-    }
-    return false;
-  });
 
   useEffect(() => {
     localStorage.setItem('current_theme', theme);
@@ -41,15 +30,22 @@ function App() {
 
   useEffect(() => {
     if (token) {
-      callAPI('fetchUserData', null, { id: token });
+      try {
+        const parsedToken = jwtDecode(token);
+        setIsBusiness(parsedToken.isBusiness);
+        setIsAdmin(parsedToken.isAdmin);
+      } catch (error) {
+        console.error("Invalid token:", error);
+        setIsBusiness(false);
+        setIsAdmin(false);
+        setToken(null);
+        localStorage.removeItem('token');
+      }
+    } else {
+      setIsBusiness(false);
+      setIsAdmin(false);
     }
-  }, [token, callAPI]);
-
-  useEffect(() => {
-    if (userData) {
-      setIsBusiness(userData.isBusiness);
-    }
-  }, [userData]);
+  }, [token]);
 
   const handleLogin = (newToken) => {
     setToken(newToken);
