@@ -25,12 +25,7 @@ const ThemeProvider = ({ children }) => {
   }, [mode]);
 
   return (
-
-    
-    
         {children}
- 
- 
   );
 };
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Navbar.css';
 import logo_light from '../images/night.png';
 import logo_dark from '../images/day.png';
@@ -10,7 +10,7 @@ import regularProfileIcon from '../images/user.png';
 
 const Navbar = ({ theme, setTheme, token, isBusinessUser, onLogout, setSearchInput }) => {
   const [input, setInput] = useState('');
-  
+  const navigate = useNavigate();
 
   const toggleMode = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
@@ -20,11 +20,8 @@ const Navbar = ({ theme, setTheme, token, isBusinessUser, onLogout, setSearchInp
 
   const handleLogoutClick = () => {
     onLogout();
+    navigate("/");
   };
-
-  useEffect(() => {
-    console.log('isBusinessUser:', isBusinessUser);
-  }, [isBusinessUser]);
 
   return (
     <div className={`navbar ${theme === 'dark' ? 'dark' : ''}`}>
@@ -34,7 +31,6 @@ const Navbar = ({ theme, setTheme, token, isBusinessUser, onLogout, setSearchInp
         {token &&  <li><Link to='/favorites'>Favorites</Link></li>}
         {isBusinessUser && <li><Link to='/my-cards'>My Cards</Link></li>}
         {isBusinessUser && <li><Link to='/CardNew'>Create New Card</Link></li>}
-        {isBusinessUser && <li><Link to='/CardEdit'>Edit Card</Link></li>}
       </ul>
 
       <div className='search-box'>

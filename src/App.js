@@ -61,7 +61,6 @@ function App() {
 
   const handleLogout = () => {
     setToken(null);
-    setIsBusiness(false);
     localStorage.removeItem('token');
   };
 
@@ -85,9 +84,9 @@ function App() {
           <Route path="/LoginForm" element={<Login handleLogin={handleLogin} />} />
           <Route path="/about" element={<About />} />
           <Route path="/cardView/:cardId" element={<CardView />} />
-          <Route path="/" element={<Home searchInput={searchInput} />} />
+          <Route path="/" element={<Home searchInput={searchInput} isBusiness={isBusiness}/>} />
           <Route path="/favorites" element={<FavoritesCard token={token} />} />
-          <Route path="/cardNew" element={<CardNew isBusinessUser={isBusiness} />} />
+          <Route path="/cardNew" element={<CardNew token={token} />} />
           <Route path="/cardEdit" element={<CardEdit isBusinessUser={isBusiness} />} />
           <Route path="/my-cards" element={<MyCards isBusinessUser={isBusiness} />} />
         </Routes>
