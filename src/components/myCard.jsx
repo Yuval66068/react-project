@@ -13,16 +13,31 @@ import useAPI from "../hook/useAPI";
 import { useNavigate } from "react-router-dom";
 import { FaRegEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import SingleCard from "./Card/singleCard";
 
 const MyCards = ({ token, isBusinessUser }) => {
-  const [data, error, isLoading, apiCall] = useAPI();
+  const [data, error, isLoading, callAPI] = useAPI();
   const navigate = useNavigate();
-  // const [myCards,setMyCards] = useState(null);
+  const [myCards,setMyCards] = useState(null);
 
   useEffect(() => {
-    apiCall(METHOD.CARDS_GET_ALL_MY_CARDS, null, {}, { "x-auth-token": token });
-    // setMyCards(data);
-  }, [apiCall]);
+    handleGetMyCards();
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      setMyCards(data);
+    }
+  }, [data]);
+
+  const handleGetMyCards = async () => {
+    try {
+      callAPI(METHOD.CARDS_GET_ALL_MY_CARDS, null, {}, { "x-auth-token": token });
+    } catch (error) {
+      console.error('Failed to fetch card data:', error.message);
+    }
+  };
+
 
   const handleCreate = () => {
     navigate("/create-card"); // Navigate to create card page
@@ -33,10 +48,11 @@ const MyCards = ({ token, isBusinessUser }) => {
   };
 
   const handleDelete = (cardId) => {
-    const payload = {
-      id: cardId,
-    };
-    // apiCall(METHOD.CARDS_DELETE,null,payload, {"x-auth-token": token});
+    // const payload = {
+    //   id: cardId,
+    // };
+    // callAPI(METHOD.CARDS_DELETE,null,payload, {"x-auth-token": token});
+    setMyCards((prevCards) => prevCards.filter((card) => card._id !== cardId));
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -50,36 +66,9 @@ const MyCards = ({ token, isBusinessUser }) => {
         Create New Card
       </Button>
       <Grid container spacing={3}>
-        {data &&
-          data.map((card) => (
-            <Grid item xs={12} sm={6} md={4} key={card._id}>
-              <Card style={{ height: "500px" }}>
-                <CardActionArea>
-                  {card.image && card.image.url && (
-                    <CardMedia
-                      component="img"
-                      height="250"
-                      image={card.image.url}
-                      alt={card.title}
-                    />
-                  )}
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      {card.title}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {card.description}
-                    </Typography>
-                    {isBusinessUser && (
-                      <>
-                        <FaRegEdit onClick={() => handleEdit(card._id)}/>
-                        <MdDelete onClick={() => handleDelete(card._id)}/>
-                      </>
-                    )}
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            </Grid>
+        {myCards &&
+          myCards.map((card) => (
+            <SingleCard card={card} key={card._id} handleDelete={handleDelete} handleEdit={handleEdit} isBusinessUser={isBusinessUser} token={token}/>
           ))}
       </Grid>
     </div>
