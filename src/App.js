@@ -84,10 +84,10 @@ function App() {
           <Route path="/LoginForm" element={<Login handleLogin={handleLogin} />} />
           <Route path="/about" element={<About />} />
           <Route path="/cardView/:cardId" element={<CardView />} />
-          <Route path="/" element={<Home searchInput={searchInput} isBusiness={isBusiness}/>} />
-          <Route path="/favorites" element={<FavoritesCard token={token} />} />
+          <Route path="/" element={<Home searchInput={searchInput} isBusiness={isBusiness} token={token}/>}/>
+          <Route path="/favorites" element={<FavoritesCard token={token}/>} />
           <Route path="/cardNew" element={<CardNew token={token} />} />
-          <Route path="/cardEdit/:cardId" element={<CardEdit isBusinessUser={isBusiness} />} />
+          <Route path="/cardEdit/:cardId" element={<CardEdit token={token}/>} />
           <Route path="/my-cards" element={<MyCards isBusinessUser={isBusiness} token={token}/>} />
         </Routes>
         {userData && (

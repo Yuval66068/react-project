@@ -5,36 +5,46 @@ import './cardEdit.css';
 import { METHOD } from '../././../models/apiSchemas';
 import useAPI from '../../hook/useAPI';
 
-const CardEdit = ({ isBusinessUser }) => {
+const CardEdit = ({ token }) => {
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { cardId } = useParams();
   const [data, error, isLoading, apiCall] = useAPI();
+  
+  useEffect(() => {
+    if(!cardId) return;
+    apiCall(METHOD.CARDS_GET_ONE, null, { id:cardId }, {});
+  }, [cardId, apiCall]);
 
   useEffect(() => {
-    const fetchCard = async () => {
-      try {
-        const cardData = await apiCall(METHOD.CARDS_GET, {}, {}, { "x-auth-token": isBusinessUser }, `/${id}`);
-        for (const [key, value] of Object.entries(cardData)) {
-          if (typeof value === 'object') {
-            for (const [nestedKey, nestedValue] of Object.entries(value)) {
-              setValue(`${key}.${nestedKey}`, nestedValue);
-            }
-          } else {
-            setValue(key, value);
-          }
-        }
-      } catch (error) {
-        console.error('Failed to fetch card data:', error.message);
-      }
-    };
-
-    fetchCard();
-  }, [id, isBusinessUser, setValue, apiCall]);
-
+    if (data) {
+      // Populate the form with the retrieved data
+      reset({
+        title: data.title,
+        subtitle: data.subtitle,
+        description: data.description,
+        phone: data.phone,
+        email: data.email,
+        web: data.web,
+        image: {
+          url: data.image?.url,
+          alt: data.image?.alt,
+        },
+        address: {
+          street: data.address?.street,
+          city: data.address?.city,
+          state: data.address?.state,
+          zip: data.address?.zip,
+          country: data.address?.country,
+          houseNumber: data.address?.houseNumber,
+        },
+      });
+    }
+  }, [data, reset]);
+  
   const handleEditSubmit = async (formData) => {
     try {
-      await apiCall(METHOD.CARDS_UPDATE, formData, {}, { "x-auth-token": isBusinessUser }, `/${id}`);
+      await apiCall(METHOD.CARDS_UPDATE, formData, {id: cardId}, { "x-auth-token": token });
       navigate('/my-cards');
     } catch (error) {
       console.error('Update failed:', error.message);
@@ -46,7 +56,7 @@ const CardEdit = ({ isBusinessUser }) => {
       <h2>Edit CARD</h2>
       <form onSubmit={handleSubmit(handleEditSubmit)}>
         <div>
-          <input placeholder='Title*' {...register('title', { required: true, minLength: 2, maxLength: 256 })} />
+          <input placeholder='Title*' {...register('title', { required: true, minLength: 2, maxLength: 256 })}/>
            {errors.title?.type === 'required' && <span style={{ color: 'red', fontSize: '0.8rem' }}>Title is required</span>}
            {errors.title?.type === 'minLength' && <span style={{ color: 'red' }}>Title must be at least 2 characters</span>}
            {errors.title?.type === 'maxLength' && <span style={{ color: 'red' }}>Title cannot exceed 256 characters</span>}
