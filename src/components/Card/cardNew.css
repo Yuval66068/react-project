@@ -30,6 +30,13 @@ form {
     border-radius: 8px;
 }
 
+.btns{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
 .dark input, .dark h2{
     color: #222;
     color: #fff;

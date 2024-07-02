@@ -30,7 +30,8 @@ const Navbar = ({ theme, setTheme, token, isBusinessUser, onLogout, setSearchInp
         <li><Link to='/about'>ABOUT</Link></li>
         {token &&  <li><Link to='/favorites'>Favorites</Link></li>}
         {isBusinessUser && <li><Link to='/my-cards'>My Cards</Link></li>}
-        {isBusinessUser && <li><Link to='/CardNew'>Create New Card</Link></li>}
+        {isBusinessUser && <li><Link to='/'>Sandbox</Link></li>}
+  
       </ul>
 
       <div className='search-box'>

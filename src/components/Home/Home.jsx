@@ -57,7 +57,7 @@ const Home = ({ searchInput, isBusiness }) => {
                 sx={{
                   display: "flex",
                   flexDirection: "column",
-                  height: "500px",
+                  height: "400px",
                 }}
               >
                 <CardActionArea>
@@ -67,7 +67,7 @@ const Home = ({ searchInput, isBusiness }) => {
                     height="30"
                     image={card.image.url}
                     title={card.title}
-                    sx={{ width: "100%", height: "250px" }}
+                    sx={{ width: "100%", height: "200px" }}
                   />
                   <CardContent
                     sx={{
@@ -107,7 +107,7 @@ const Home = ({ searchInput, isBusiness }) => {
                         onClick={() => handleSingleCard(card._id)}
                         fullWidth
                       >
-                      <BsInfoSquare  style={{width:"30px", height:"30px"}}/>
+                      <BsInfoSquare  style={{width:"30px", height:"30px", position:"absolute"}}/>
                       </Button>
                     )}
                   </CardContent>

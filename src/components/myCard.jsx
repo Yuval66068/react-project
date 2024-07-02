@@ -40,7 +40,7 @@ const MyCards = ({ token, isBusinessUser }) => {
 
 
   const handleCreate = () => {
-    navigate("/create-card"); // Navigate to create card page
+    navigate("/cardNew"); // Navigate to create card page
   };
 
   const handleEdit = (cardId) => {

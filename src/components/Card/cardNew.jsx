@@ -107,7 +107,7 @@ const CardNew = ({token}) => {
            {errors.address?.houseNumber?.type === 'minLength' && <span style={{ color: 'red' }}>houseNumber must be at least 1 characters</span>}
            {errors.address?.houseNumber?.type === 'maxLength' && <span style={{ color: 'red' }}>houseNumber cannot exceed 256 characters</span>}
         </div>
-        <div>
+        <div className='btns'>
           <button className="submitBtn" type="submit">SUBMIT</button>
           <button className="cancelBtn" type="button" onClick={() => navigate('/')}>CANCEL</button>
           <button className="resetBtn" type="reset" onClick={() => reset()}>RESET</button>

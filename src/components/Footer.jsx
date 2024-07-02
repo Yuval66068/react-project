@@ -23,7 +23,7 @@ const Footer = ({ token, isBusinessUser }) => (
           <DocumentScannerIcon className="link-icon" />
         My Cards
         </Link></li>}
-        {token &&  isBusinessUser && <li><Link to='/CardNew'>Create New Card</Link></li>}
+     
       </ul>
     </nav>
   </footer>
