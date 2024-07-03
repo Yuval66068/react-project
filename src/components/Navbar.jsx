@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Navbar.css';
 import logo_light from '../images/night.png';
@@ -30,8 +30,6 @@ const Navbar = ({ theme, setTheme, token, isBusinessUser, onLogout, setSearchInp
         <li><Link to='/about'>ABOUT</Link></li>
         {token &&  <li><Link to='/favorites'>Favorites</Link></li>}
         {isBusinessUser && <li><Link to='/my-cards'>My Cards</Link></li>}
-        {isBusinessUser && <li><Link to='/'>Sandbox</Link></li>}
-  
       </ul>
 
       <div className='search-box'>

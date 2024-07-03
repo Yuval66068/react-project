@@ -11,7 +11,6 @@ const Home = ({ searchInput, isBusiness,token }) => {
   const [data, error, isLoading, apiCall] = useAPI();
   const filteredList = data && data.filter((card) => card.title.includes(searchInput));
 
-
   useEffect(() => {
     apiCall(METHOD.CARDS_GET_ALL);
   }, [apiCall]);

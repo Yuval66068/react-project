@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './cardNew.css';
 import { METHOD } from '../././../models/apiSchemas';
 import useAPI from '../../hook/useAPI';
+import { toast } from 'react-toastify';
 
 const CardNew = ({token}) => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
@@ -13,13 +14,14 @@ const CardNew = ({token}) => {
   const handleLoginSubmit = async (formData) => {
     try {
       await apiCall(METHOD.CARDS_CREATE, formData,{},{"x-auth-token": token});
-      console.log(data)
+      toast.success('Card created successfully!');
       if(data) {
         reset(); 
         navigate('/');
       }
     } catch (error) {
       console.error('Submission failed:', error.message);
+      toast.error('Submission failed!');
     }
   };
 

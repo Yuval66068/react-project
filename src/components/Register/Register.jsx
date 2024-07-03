@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import './Register.css';
 import { METHOD } from '../././../models/apiSchemas';
 import useAPI from '../../hook/useAPI';
+import { toast } from 'react-toastify';
 
-
-const RegisterForm = ({ handleLogin }) => {
+const RegisterForm = () => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
   const navigate = useNavigate();
   const [data, error, isLoading, apiCall] = useAPI();
@@ -14,10 +14,12 @@ const RegisterForm = ({ handleLogin }) => {
   const onSubmit = async (formData) => {
     try {
       await apiCall(METHOD.AUTH_REGISTER, formData); 
+      toast.success('Registration successful!');
       reset(); 
       navigate('/LoginForm');
     } catch (error) {
       console.error('Registration failed:', error.message);
+      toast.error('Registration failed');
     }
   };
 

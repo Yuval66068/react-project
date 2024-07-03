@@ -19,7 +19,7 @@ import { jwtDecode } from "jwt-decode";
 const HomeCard = ({ card, token, isBusiness,onLikeToggle, cards }) => {
   const [data, error, isLoading, apiCall] = useAPI();
   const navigate = useNavigate();
-  const isLiked = card.likes.some((userId) => userId === jwtDecode(token)._id)
+  const isLiked = token ? card.likes.some((userId) => userId === jwtDecode(token)._id) : false;
 
   const handleSingleCard = (id) => {
     navigate(`/cardView/${id}`);
@@ -37,6 +37,7 @@ const HomeCard = ({ card, token, isBusiness,onLikeToggle, cards }) => {
           flexDirection: "column",
           height: "400px",
         }}
+        className='singleCard'
       >
         <CardActionArea>
           <CardMedia

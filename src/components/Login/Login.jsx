@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { METHOD } from "../././../models/apiSchemas";
 import useAPI from "../../hook/useAPI";
 import "./Login.css";
+import { toast } from 'react-toastify';
 
 const Login = ({ handleLogin }) => {
   const {
@@ -23,23 +24,23 @@ const Login = ({ handleLogin }) => {
         reset();
         setTimeout(() => {
           navigate("/");
-        }, 1500);
+        }, 1000);
       }
     } catch (error) {
       console.error("Login failed:", error.message);
+      toast.error('Login failed');
     }
   };
-  console.log("data", data);
   useEffect(() => {
     if (data) {
-      console.log("Login successful!", data);
       handleLogin(data);
+      toast.success('Login successful!');
       reset();
       setTimeout(() => {
         navigate("/");
-      }, 2000);
+      }, 1000);
     }
-  }, [data, handleLogin, navigate]);
+  }, [data, handleLogin]);
 
   return (
     <div className="login-container">

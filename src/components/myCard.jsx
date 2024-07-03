@@ -1,24 +1,15 @@
 import React, { useEffect, useState } from "react";
-import {
-  Grid,
-  Card,
-  CardActionArea,
-  CardMedia,
-  CardContent,
-  Typography,
-  Button,
-} from "@mui/material";
+import { Grid, Button } from "@mui/material";
 import { METHOD } from "../models/apiSchemas"; // Adjust import as necessary
 import useAPI from "../hook/useAPI";
 import { useNavigate } from "react-router-dom";
-import { FaRegEdit } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
 import SingleCard from "./Card/singleCard";
+import { toast } from "react-toastify";
 
 const MyCards = ({ token, isBusinessUser }) => {
   const [data, error, isLoading, callAPI] = useAPI();
   const navigate = useNavigate();
-  const [myCards,setMyCards] = useState(null);
+  const [myCards, setMyCards] = useState(null);
 
   useEffect(() => {
     handleGetMyCards();
@@ -33,8 +24,10 @@ const MyCards = ({ token, isBusinessUser }) => {
   const handleGetMyCards = async () => {
     try {
       callAPI(METHOD.CARDS_GET_ALL_MY_CARDS, null, {}, { "x-auth-token": token });
+      toast.success('My cards fetched successfully!');
     } catch (error) {
       console.error('Failed to fetch card data:', error.message);
+      toast.error('Failed to fetch card data!');
     }
   };
 
@@ -68,7 +61,7 @@ const MyCards = ({ token, isBusinessUser }) => {
       <Grid container spacing={3}>
         {myCards &&
           myCards.map((card) => (
-            <SingleCard card={card} key={card._id} handleDelete={handleDelete} handleEdit={handleEdit} isBusinessUser={isBusinessUser} token={token}/>
+            <SingleCard card={card} key={card._id} handleDelete={handleDelete} handleEdit={handleEdit} isBusinessUser={isBusinessUser} token={token} />
           ))}
       </Grid>
     </div>

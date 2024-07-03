@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import './cardEdit.css';
 import { METHOD } from '../././../models/apiSchemas';
 import useAPI from '../../hook/useAPI';
+import { toast } from 'react-toastify';
 
 const CardEdit = ({ token }) => {
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
@@ -18,7 +19,6 @@ const CardEdit = ({ token }) => {
 
   useEffect(() => {
     if (data) {
-      // Populate the form with the retrieved data
       reset({
         title: data.title,
         subtitle: data.subtitle,
@@ -45,9 +45,10 @@ const CardEdit = ({ token }) => {
   const handleEditSubmit = async (formData) => {
     try {
       await apiCall(METHOD.CARDS_UPDATE, formData, {id: cardId}, { "x-auth-token": token });
-      navigate('/my-cards');
+      toast.success('Card updated successfully!');
     } catch (error) {
       console.error('Update failed:', error.message);
+      toast.error('Update failed!');
     }
   };
 

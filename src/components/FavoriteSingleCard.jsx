@@ -1,4 +1,7 @@
 import React from 'react'
+import { FaTrash } from "react-icons/fa";
+import { METHOD } from "../models/apiSchemas";
+import useAPI from "../hook/useAPI";
 import {
     Grid,
     Card,
@@ -6,23 +9,20 @@ import {
     CardMedia,
     CardContent,
     Typography,
-  } from "@mui/material";
-  import { FaRegEdit } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
-import useAPI from "../../hook/useAPI";
-import { METHOD } from "../../models/apiSchemas";
+} from "@mui/material";
 
 
-const SingleCard = ({card, handleEdit, handleDelete, isBusinessUser, token}) => {
-    const [data, error, isLoading, callAPI] = useAPI();
-    const onDelete = async () => {
+const FavoriteSingleCard = ({ card, token, handleRemoveFavorite }) => {
+    const [data, error, isLoading, apiCall] = useAPI();
+
+    const onRemoveFavorites = async () => {
         try {
-            await callAPI(METHOD.CARDS_DELETE, null, { id: card._id }, {"x-auth-token": token});
-            handleDelete(card._id);
+            await apiCall(METHOD.CARDS_LIKE, null, { id: card._id }, { "x-auth-token": token });
+            handleRemoveFavorite(card._id)
         } catch (error) {
-            console.error('Failed to delete card:', error.message);
+            console.error('Failed to remove favorite:', error.message)
         }
-    };
+    }
 
     return (
         <Grid item xs={12} sm={6} md={4} key={card._id}>
@@ -36,24 +36,19 @@ const SingleCard = ({card, handleEdit, handleDelete, isBusinessUser, token}) => 
                             alt={card.title}
                         />
                     )}
-                    <CardContent>
+                    <CardContent >
                         <Typography gutterBottom variant="h5" component="div">
                             {card.title}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
                             {card.description}
                         </Typography>
-                        {isBusinessUser && (
-                            <>
-                                <FaRegEdit onClick={() => handleEdit(card._id)} />
-                                <MdDelete onClick={onDelete} />
-                            </>
-                        )}
                     </CardContent>
+                    <FaTrash onClick={onRemoveFavorites} color='#c30101' />
                 </CardActionArea>
             </Card>
         </Grid>
     )
 }
 
-export default SingleCard
+export default FavoriteSingleCard

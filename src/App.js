@@ -4,7 +4,7 @@ import Navbar from './components/Navbar';
 import About from './components/pages/About';
 import RegisterForm from './components/Register/Register';
 import Login from './components/Login/Login';
-import useAPI from './hook/useAPI'; 
+import useAPI from './hook/useAPI';
 import Home from './components/Home/Home.jsx';
 import CardNew from './components/Card/cardNew';
 import CardView from './components/Card/cardView';
@@ -13,7 +13,8 @@ import Footer from './components/Footer';
 import FavoritesCard from './components/favorites';
 import MyCards from './components/myCard';
 import { jwtDecode } from "jwt-decode";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const currentTheme = localStorage.getItem('current_theme');
@@ -50,45 +51,38 @@ function App() {
   const handleLogin = (newToken) => {
     setToken(newToken);
     localStorage.setItem('token', newToken);
-    fetch('./models/apiSchemas.js', {
-      headers: { Authorization: `Bearer ${newToken}` }
-    })
-      .then(response => response.json())
-      .then(data => setIsBusiness(data.isBusiness))
-      .catch(error => console.error(error));
-    callAPI('fetchUserData', null, { id: newToken });
   };
 
   const handleLogout = () => {
     setToken(null);
+    toast.success('Logout successful!');
     localStorage.removeItem('token');
   };
 
   return (
     <Router>
       {!isLoading && (
-        <Navbar 
-          theme={theme} 
-          setTheme={setTheme} 
-          token={token} 
-          isBusinessUser={isBusiness} 
-          onLogout={handleLogout} 
-          setSearchInput={setSearchInput} 
+        <Navbar
+          theme={theme}
+          setTheme={setTheme}
+          token={token}
+          isBusinessUser={isBusiness}
+          onLogout={handleLogout}
+          setSearchInput={setSearchInput}
         />
       )}
       <div className={`container ${theme}`}>
         {isLoading && <p>Loading...</p>}
-        {/* {error && <p>Error: {error}</p>} */}
         <Routes>
-          <Route path="/RegisterForm" element={<RegisterForm handleLogin={handleLogin} />} />
+          <Route path="/RegisterForm" element={<RegisterForm />} />
           <Route path="/LoginForm" element={<Login handleLogin={handleLogin} />} />
           <Route path="/about" element={<About />} />
           <Route path="/cardView/:cardId" element={<CardView />} />
-          <Route path="/" element={<Home searchInput={searchInput} isBusiness={isBusiness} token={token}/>}/>
-          <Route path="/favorites" element={<FavoritesCard token={token}/>} />
+          <Route path="/" element={<Home searchInput={searchInput} isBusiness={isBusiness} token={token} />} />
+          <Route path="/favorites" element={<FavoritesCard token={token} />} />
           <Route path="/cardNew" element={<CardNew token={token} />} />
-          <Route path="/cardEdit/:cardId" element={<CardEdit token={token}/>} />
-          <Route path="/my-cards" element={<MyCards isBusinessUser={isBusiness} token={token}/>} />
+          <Route path="/cardEdit/:cardId" element={<CardEdit token={token} />} />
+          <Route path="/my-cards" element={<MyCards isBusinessUser={isBusiness} token={token} />} />
         </Routes>
         {userData && (
           <div>
@@ -97,6 +91,19 @@ function App() {
           </div>
         )}
       </div>
+      <ToastContainer 
+      position="top-right"
+      autoClose={2000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="light"
+      style={{ whiteSpace: 'nowrap' }}
+      />
       <Footer token={token} isBusinessUser={isBusiness} />
     </Router>
   );

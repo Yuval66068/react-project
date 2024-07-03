@@ -30,6 +30,10 @@
     color: #fff;
 }
 
+.dark .singleCard {
+  background-color: #333 !important;
+}
+
 
 
 .about{
